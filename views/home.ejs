@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
+    <title>upload file</title>
+  </head>
+  <body>
+    <form
+      id="form"
+      method="post"
+      action="/uploads"
+      enctype="multipart/form-data"
+    >
+      <label for="file" class="custom-file-label">اختر ملف...</label>
+      <span id="file-name" style="margin-bottom: 10px; color: #555"></span>
+      <input type="file" name="file" id="file" required style="display: none" />
+      <input type="text" name="filename" id="text" required />
+      <input type="submit" />
+    </form>
+    <div id="imgas"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      let div = document.getElementById("imgas");
+      axios.get("/get").then((result) => {
+        const data = result.data;
+        data.forEach((e) => {
+          const span = document.createElement("span");
+          span.innerHTML = `<a target=_blank href=${JSON.stringify(
+            e.filepath
+          )}>fileName:${JSON.stringify(e.filename)}</a>`;
+          div.append(span);
+        });
+      });
+      const fileInput = document.getElementById("file");
+      const fileNameSpan = document.getElementById("file-name");
+      const fileLabel = document.querySelector(".custom-file-label");
+      fileLabel.addEventListener("click", function () {
+        fileInput.click();
+      });
+      fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+          fileNameSpan.textContent = fileInput.files[0].name;
+        } else {
+          fileNameSpan.textContent = "";
+        }
+      });
+    </script>
+  </body>
+</html>
